@@ -1,13 +1,16 @@
 {
   "name": "sfr_box_scraper",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A small utility to scrape SFR ISP box metrics using puppeteer",
+  "main": "src/scrape.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "bin": {
+    "sfr-box-scraper": "./bin/exporter.js"
+  },
+  "keywords": ["sfr", "exporter", "metrics", "isp"],
+  "author": "Julien Jean <julien.jean@froupit.org>",
   "license": "ISC",
   "dependencies": {
     "@influxdata/influxdb-client": "^1.10.0",
