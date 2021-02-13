@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer')
 const { InfluxDB, Point } = require('@influxdata/influxdb-client')
+const lanNetworkStats = require('./lan_network_stats.js')
 
 require('dotenv').config()
 
@@ -75,13 +76,26 @@ const scrape = async () => {
     const connectedWifiDevices = await page.evaluate(() => document.querySelectorAll('.homefooter .span3:nth-child(2) table.stack tbody tr').length)
     points.push(newPoint('connected_wifi_devices', connectedWifiDevices, resolvedLabels))
     points.push(newMultiplePoint(
-      'connected_devices', [
+      'connected_devices',
+      [
         { key: 'wifi', value: connectedWifiDevices },
         { key: 'ethernet', value: connectedWiredDevices },
         { key: 'total', value: connectedWifiDevices + connectedWiredDevices },
       ],
       resolvedLabels
     ))
+
+    const lanNetworkMetrics = await lanNetworkStats(page, writeApi)
+    lanNetworkMetrics.forEach(lanNetworkMetric => {
+      points.push(newMultiplePoint(
+        'lan_network',
+        lanNetworkMetric.metrics.map(m => ({
+          key: Object.keys(m)[0],
+          value: m[Object.keys(m)[0]]
+        })),
+        [{ 'lan': lanNetworkMetric.label }]
+      ))
+    })
 
     points.forEach(point => writeApi.writePoint(point))
   } catch (err) {

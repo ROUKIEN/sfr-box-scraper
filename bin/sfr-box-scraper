@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+const parse = require('parse-duration')
+
+const scrape = require('../src/scrape.js')
+
+const safeScrape = async () => {
+  process.stdout.write('scraping...')
+  try {
+    await scrape()
+    process.stdout.write('done. \n')
+  } catch(err) {
+    console.error(`failed to scrape: ${err.message}`)
+  }
+}
+
+yargs(hideBin(process.argv))
+  .locale('en')
+  .command('collect [--interval]', 'collect the metrics', yargs => {
+    yargs
+      .option('interval', {
+        describe: 'interval to scrape metrics',
+        default: null
+      })
+  }, argv => {
+    if (argv.interval) {
+      const intervalAsMs = parse(argv.interval)
+      console.log(`Start scraping with interval of ${argv.interval}...`)
+      safeScrape()
+      setInterval(safeScrape, intervalAsMs)
+    } else {
+      try {
+        safeScrape()
+      } catch (err) {
+        console.error(err.message)
+        process.exit(2)
+      }
+    }
+  })
+  .option('verbose', {
+    alias: 'v',
+    type: 'boolean',
+    description: 'Run with verbose logging'
+  })
+  .help()
+  .alias('help', 'h')
+  .argv
