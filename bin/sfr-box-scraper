@@ -46,4 +46,5 @@ yargs(hideBin(process.argv))
   })
   .help()
   .alias('help', 'h')
+  .demandCommand()
   .argv
