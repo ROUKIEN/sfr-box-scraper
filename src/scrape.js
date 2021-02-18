@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer')
 const { InfluxDB, Point } = require('@influxdata/influxdb-client')
 const lanNetworkStats = require('./lan_network_stats.js')
+const lanWifi = require('./lan_wifi.js')
 
 require('dotenv').config()
 
@@ -87,14 +88,32 @@ const scrape = async () => {
 
     const lanNetworkMetrics = await lanNetworkStats(page, writeApi)
     lanNetworkMetrics.forEach(lanNetworkMetric => {
-      points.push(newMultiplePoint(
-        'lan_network',
+      const thePoint = newMultiplePoint(
+        `lan_network`,
         lanNetworkMetric.metrics.map(m => ({
           key: Object.keys(m)[0],
           value: m[Object.keys(m)[0]]
         })),
-        [{ 'lan': lanNetworkMetric.label }]
-      ))
+        [{ identifier: 'lan_port', value: lanNetworkMetric.label }]
+      )
+
+      points.push(thePoint)
+    })
+
+    const wlanDevices = await lanWifi(page)
+    wlanDevices.forEach(wlanDevice => {
+      const thePoint = newMultiplePoint(
+        `wlan_device`,
+        [
+          {key: 'signal_strength_db', value: wlanDevice.signalStrengthDb }
+        ],
+        [
+          { identifier: 'mac_addr', value: wlanDevice.macAddr },
+          { identifier: 'ip_addr', value: wlanDevice.ipAddr },
+        ]
+      )
+
+      points.push(thePoint)
     })
 
     points.forEach(point => writeApi.writePoint(point))

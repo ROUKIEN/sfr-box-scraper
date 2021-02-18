@@ -21,6 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "@influxdata/influxdb-client": "^1.10.0",
+    "cheerio": "^1.0.0-rc.3",
     "dotenv": "^8.2.0",
     "parse-duration": "^0.4.4",
     "puppeteer": "^7.0.1",
