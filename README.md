@@ -6,9 +6,7 @@ A cli tool to scrape your SFR box web UI.
 
 ### NPM package
 
-```shell
-npm i -g @ROUKIEN/sfr-box-scraper
-```
+Checkout the packages section of the repo.
 
 ### Docker image
 
@@ -20,7 +18,7 @@ By default, the scraper will only run once then stop.
 You can schedule the execution by adding the `--interval 10m` option to export metrics every 10 minutes.
 
 ```shell
-sfr-box-scraper  [--once xor --interval 10m]
+sfr-box-scraper -h
 ```
 
 ### Configuring the box authentication
