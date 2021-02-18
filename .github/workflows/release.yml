@@ -1,0 +1,21 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-docker:
+    name: release docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: docker login
+        run: echo "$CR_PAT" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        env:
+          CR_PAT: ${{ secrets.CR_PAT }}
+      - name: docker build
+        run: make build-docker
+      - name: docker release
+        run: make release-docker
