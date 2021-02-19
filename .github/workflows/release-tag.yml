@@ -27,7 +27,7 @@ jobs:
       - name: get tag name
         run: |
           version=$(git describe --tags --abbrev=0)
-          echo "image_tag=$version | jq -j '.version'" >> $GITHUB_ENV
+          echo "image_tag=$version" >> $GITHUB_ENV
       - name: docker login
         run: echo "$CR_PAT" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         env:
