@@ -10,7 +10,7 @@ Checkout the packages section of the repo.
 
 ### Docker image
 
-@todo
+Checkout the packages section of the repo too :smile:.
 
 ## Usage
 
