@@ -22,21 +22,4 @@ async function lanWifi (page) {
   return metrics.get()
 }
 
-/**
- * Formats the lan port metrics
- *
- * @param {DomElement} node
- */
-const evaluateWlanDevice = node => {
-  const macAddr = node.querySelector('thead tr:nth-child(1) td').innerText
-  const ipAddr = node.querySelector('thead tr:nth-child(2) td').innerText
-  const signalStrength = node.querySelector('tbody .rssidb').innerText
-
-  return {
-    macAddr,
-    ipAddr,
-    signalStrength,
-  }
-}
-
 module.exports = lanWifi
