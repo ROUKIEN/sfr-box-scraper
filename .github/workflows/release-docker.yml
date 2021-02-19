@@ -1,9 +1,9 @@
 name: Docker release
 
 on:
-  push:
+  create:
     tags:
-      - v*
+      - 'v*.*.*'
 
 jobs:
   release-docker:
@@ -11,11 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: get tag name
+        run: echo "image_tag=$(echo $GITHUB_REF | cut -d "/" -f4)" >> $GITHUB_ENV
       - name: docker login
         run: echo "$CR_PAT" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         env:
           CR_PAT: ${{ secrets.CR_PAT }}
       - name: docker build
         run: make build-docker
+        env:
+          DOCKER_TAG: ${{ env.image_tag }}
       - name: docker release
         run: make release-docker
+        env:
+          DOCKER_TAG: ${{ env.image_tag }}
