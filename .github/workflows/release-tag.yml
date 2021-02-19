@@ -33,10 +33,6 @@ jobs:
         env:
           CR_PAT: ${{ secrets.CR_PAT }}
       - name: docker build
-        run: make build-docker
-        env:
-          DOCKER_TAG: ${{ env.image_tag }}
+        run: DOCKER_TAG=${{ env.image_tag }} make build-docker
       - name: docker release
-        run: make release-docker
-        env:
-          DOCKER_TAG: ${{ env.image_tag }}
+        run: DOCKER_TAG=${{ env.image_tag }} make release-docker
