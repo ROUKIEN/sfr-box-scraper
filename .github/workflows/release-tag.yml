@@ -1,4 +1,4 @@
-name: Release tag
+name: Release tag and Docker
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  release-docker:
+  release-tag:
     name: create release
     runs-on: ubuntu-latest
     steps:
@@ -23,3 +23,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # docker build
+      - name: get tag name
+        run: echo "image_tag=$(echo package.json | jq -c '.version'" >> $GITHUB_ENV
+      - name: docker login
+        run: echo "$CR_PAT" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        env:
+          CR_PAT: ${{ secrets.CR_PAT }}
+      - name: docker build
+        run: make build-docker
+        env:
+          DOCKER_TAG: ${{ env.image_tag }}
+      - name: docker release
+        run: make release-docker
+        env:
+          DOCKER_TAG: ${{ env.image_tag }}
