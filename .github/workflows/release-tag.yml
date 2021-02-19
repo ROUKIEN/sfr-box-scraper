@@ -1,0 +1,19 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-docker:
+    name: create release
+    runs-on: ubuntu-latest
+    container:
+      image: node:15.6.0-alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: install dependencies
+        run: npm ci
+      - name: apply semantic release
+        run: npm semantic-release

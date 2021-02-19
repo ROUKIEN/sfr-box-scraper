@@ -1,0 +1,5 @@
+{
+  "branches": ["main"],
+  "repositoryUrl": "https://github.com/ROUKIEN/sfr-box-scraper",
+  "tagFormat": "v${version}"
+}
