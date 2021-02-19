@@ -1,12 +1,13 @@
 {
   "name": "@roukien/sfr-box-scraper",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "description": "A small utility to scrape SFR ISP box metrics using puppeteer",
-  "repository": "https://github.com/ROUKIEN/sfr-box-scraper",
+  "repository": "https://github.com/roukien/sfr-box-scraper",
   "main": "src/scrape.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./bin/sfr-box-scraper"
+    "start": "node ./bin/sfr-box-scraper",
+    "semantic-release": "semantic-release"
   },
   "bin": {
     "sfr-box-scraper": "./bin/sfr-box-scraper"
@@ -17,6 +18,9 @@
     "metrics",
     "isp"
   ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "author": "Julien Jean <julien.jean@froupit.org>",
   "license": "ISC",
   "dependencies": {
@@ -26,5 +30,8 @@
     "parse-duration": "^0.4.4",
     "puppeteer": "^7.0.1",
     "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "semantic-release": "^17.3.9"
   }
 }
