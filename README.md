@@ -1,5 +1,7 @@
 # sfr box scraper
 
+![Docker Pulls](https://img.shields.io/docker/pulls/roukien/sfr-box-scraper)
+
 A cli tool to scrape your SFR box web UI.
 
 ## Installation
@@ -11,6 +13,8 @@ Checkout the packages section of the repo.
 ### Docker image
 
 Checkout the packages section of the repo too :smile:.
+
+> If you are not able to run the docker image hosted on ghcr.io, I'm also publishing the docker image on [hub.docker.com](https://hub.docker.com/r/roukien/sfr-box-scraper).
 
 ## Usage
 
