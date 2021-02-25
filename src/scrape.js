@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer')
 const { InfluxDB, Point } = require('@influxdata/influxdb-client')
 const lanNetworkStats = require('./lan_network_stats.js')
 const lanWifi = require('./lan_wifi.js')
+const v4network = require('./v4network.js')
 
 require('dotenv').config()
 
@@ -71,22 +72,24 @@ const scrape = async () => {
     const uptime = await page.evaluate(() => document.querySelector('.pull-right tr:nth-child(2) td').innerText)
     points.push(newPoint('uptime', uptime, resolvedLabels))
 
-    const connectedWiredDevices = await page.evaluate(() => document.querySelectorAll('.homefooter .span3:nth-child(1) tbody tr').length)
-    points.push(newPoint('connected_wired_devices', connectedWiredDevices, resolvedLabels))
+    const v4devices = await v4network(page)
+    v4devices.forEach(v4Device => {
+      const thePoint = newMultiplePoint(
+        `v4_device`,
+        [{ key: 'test', value: 1 }],
+        [
+          { identifier: 'port', value: v4Device.port },
+          { identifier: 'ipv4_addr', value: v4Device.ipv4Addr },
+          { identifier: 'mac_addr', value: v4Device.macAddr },
+          { identifier: 'hostname', value: v4Device.hostname },
+          { identifier: 'kind', value: v4Device.port == 'Wifi' ? 'Wifi' : 'lan' },
+        ]
+      )
 
-    const connectedWifiDevices = await page.evaluate(() => document.querySelectorAll('.homefooter .span3:nth-child(2) table.stack tbody tr').length)
-    points.push(newPoint('connected_wifi_devices', connectedWifiDevices, resolvedLabels))
-    points.push(newMultiplePoint(
-      'connected_devices',
-      [
-        { key: 'wifi', value: connectedWifiDevices },
-        { key: 'ethernet', value: connectedWiredDevices },
-        { key: 'total', value: connectedWifiDevices + connectedWiredDevices },
-      ],
-      resolvedLabels
-    ))
+      points.push(thePoint)
+    })
 
-    const lanNetworkMetrics = await lanNetworkStats(page, writeApi)
+    const lanNetworkMetrics = await lanNetworkStats(page)
     lanNetworkMetrics.forEach(lanNetworkMetric => {
       const thePoint = newMultiplePoint(
         `lan_network`,
